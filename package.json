@@ -1,0 +1,52 @@
+{
+  "name": "html-to-elementor",
+  "version": "0.2.0",
+  "description": "Convert HTML pages into native Elementor templates (containers + free widgets). Library, CLI, MCP server, agent skill and WordPress plugin with WP-CLI.",
+  "license": "MIT",
+  "type": "module",
+  "author": "Orbitronix",
+  "homepage": "https://github.com/istiackmohammad/html-to-elementor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/istiackmohammad/html-to-elementor.git"
+  },
+  "bugs": "https://github.com/istiackmohammad/html-to-elementor/issues",
+  "keywords": ["elementor", "wordpress", "html", "converter", "mcp", "wp-cli", "page-builder"],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "html-to-elementor": "./dist/cli.js",
+    "html-to-elementor-mcp": "./dist/server.js"
+  },
+  "files": ["dist", "docs/MAPPING.md", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/bundle.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:php": "php test/php/importer-test.php",
+    "package": "npm run build && node scripts/package.mjs",
+    "prepare": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "fflate": "^0.8.2",
+    "parse5": "^8.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.0"
+  }
+}

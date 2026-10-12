@@ -1,37 +1,63 @@
 # html-to-elementor
 
-Convert HTML pages into **native Elementor templates**: real flexbox/grid containers and
-editable widgets (Heading, Text Editor, Button, Image, Icon List, Icon, Video, Divider), not
-one big HTML block.
+Convert HTML pages into **native Elementor pages and templates**: real flexbox/grid
+containers and editable widgets (Heading, Text Editor, Button, Image, Icon List, Icon, Video,
+Divider), not one big HTML block.
 
-- Runs locally and offline. Your HTML never leaves your machine.
-- Free and open source (MIT). No account, no API key, no quota.
-- Uses only free Elementor widgets. Works with Elementor 3.16+ and 4.x, no Pro or add-ons needed.
-- Reads your CSS properly: cascade, specificity, `!important`, CSS variables, shorthands and
-  media queries, and turns them into Elementor's desktop / tablet / mobile settings.
-- Comes in four forms: a **CLI**, a **Python library**, an **MCP server** (Claude, Cursor,
-  Codex, any MCP client) and an **agent skill** (Claude Code / Claude.ai skills).
+- **Open source (MIT).** Runs locally: your HTML is never sent to a third-party service.
+- **Free Elementor widgets only.** Works with Elementor 3.16+ and 4.x. No Pro, no add-ons.
+- **Reads your CSS properly.** It handles the cascade, specificity, `!important`, CSS variables,
+  shorthands and media queries, and turns them into Elementor's desktop / tablet / mobile settings.
+- **One engine, five ways to use it:**
+
+| | For | Get it |
+|---|---|---|
+| **WordPress plugin** | Site owners: Tools › HTML to Elementor, plus `wp html-to-elementor` WP-CLI | [Releases](../../releases) › `html-to-elementor-wp-plugin-*.zip` |
+| **CLI** | Developers, build pipelines | `npx -y github:istiackmohammad/html-to-elementor page.html` |
+| **MCP server** | Claude, Cursor, Codex, any MCP client | `npx -y -p github:istiackmohammad/html-to-elementor html-to-elementor-mcp` |
+| **Agent skill** | Claude Code / Claude.ai skills | [Releases](../../releases) › `html-to-elementor-skill.zip` |
+| **Library** | Your own tools (Node and browser) | `npm install github:istiackmohammad/html-to-elementor` |
+
+> Not on the npm registry yet: the commands below install straight from GitHub (npm builds it on
+> first run). Once published, `github:istiackmohammad/html-to-elementor` becomes plain `html-to-elementor`.
 
 ## Why
 
 Elementor's official MCP builds pages from prompts on a live site (Elementor 4.3+, admin
-application password, Atomic layouts). Hosted HTML importers send your markup to a paid
-service. This project fills the gap: a local, scriptable converter you can read, fix and
-extend.
+application password, Atomic layouts) and does not take HTML. Hosted HTML importers send
+your markup to a paid service. This project is an open, local, scriptable converter you can
+read, fix and extend.
 
-## Quick start
+## WordPress plugin
+
+Install the plugin zip from the [latest release](../../releases), activate it (Elementor must be
+active), then:
+
+- **Tools › HTML to Elementor:** paste or upload HTML. It converts in your browser, shows a
+  report, then creates a draft page or a saved template. It can also copy remote images into
+  the Media Library.
+- **WP-CLI:**
 
 ```bash
-pip install git+https://github.com/istiackmohammad/html-to-elementor
-html-to-elementor page.html -o out/
+wp html-to-elementor doctor                                       # Elementor, containers, Node.js ready?
+wp html-to-elementor import landing.html --user=admin             # .html needs Node.js 18+ on the server
+wp html-to-elementor import landing.json --as=template --user=admin   # .json needs nothing extra
+wp html-to-elementor import landing.html --post=42 --sideload-images --status=publish --user=admin
+wp html-to-elementor convert landing.html --out=./converted
 ```
 
-This writes `out/<page-title>.json` and `out/<page-title>.zip`, plus a short report.
+Pages are saved through Elementor's own Documents API. HTML widgets (forms, tables, SVG) can
+only be imported by users with the `unfiltered_html` capability. A REST endpoint
+(`POST /wp-json/html-to-elementor/v1/import`) is available for your own tools.
 
-**Import into WordPress:** Templates › Saved Templates › **Import Templates** › pick the
-`.zip` or `.json`. Then open any page with Elementor › folder icon › My Templates › **Insert**.
+## CLI
 
-### Options
+```bash
+npx -y github:istiackmohammad/html-to-elementor page.html -o out/
+```
+
+This writes `out/<page-title>.json` and `out/<page-title>.zip` and prints a report. Import
+either file in **Templates › Saved Templates › Import Templates**.
 
 | Flag | What it does |
 |---|---|
@@ -41,41 +67,27 @@ This writes `out/<page-title>.json` and `out/<page-title>.zip`, plus a short rep
 | `--keep-css` | Also embed the original CSS in an HTML widget and keep class names, for closer fidelity |
 | `--no-canvas` | Keep the theme header/footer (default page template is Elementor Canvas) |
 | `--type section` | Save as a section template instead of a page |
-| `--elements-only` | Print just the elements array (the `_elementor_data` post meta value) |
+| `--stdout` | Print `{template, report}` JSON instead of writing files |
+| `--elements-only` | Print just the elements array (the `_elementor_data` value) |
 | `--no-zip` | Write only the `.json` |
 | `--seed N` | Reproducible element IDs |
 
-### Python
-
-```python
-from html_to_elementor import Options, convert, to_template
-
-elements, page_settings, report = convert(html, Options(title="Landing"))
-template = to_template(elements, page_settings, "Landing")
-print(report.as_dict())   # widget counts, HTML fallbacks, warnings
-```
-
 ## MCP server
-
-```bash
-pip install "html-to-elementor[mcp] @ git+https://github.com/istiackmohammad/html-to-elementor"
-```
 
 Claude Code:
 
 ```bash
-claude mcp add html-to-elementor -- html-to-elementor-mcp
+claude mcp add html-to-elementor -- npx -y -p github:istiackmohammad/html-to-elementor html-to-elementor-mcp
 ```
 
-Or with [uv](https://docs.astral.sh/uv/), no install step (Claude Desktop, Cursor, etc.):
+Claude Desktop, Cursor and other clients:
 
 ```json
 {
   "mcpServers": {
     "html-to-elementor": {
-      "command": "uvx",
-      "args": ["--from", "html-to-elementor[mcp] @ git+https://github.com/istiackmohammad/html-to-elementor",
-               "html-to-elementor-mcp"]
+      "command": "npx",
+      "args": ["-y", "-p", "github:istiackmohammad/html-to-elementor", "html-to-elementor-mcp"]
     }
   }
 }
@@ -83,29 +95,39 @@ Or with [uv](https://docs.astral.sh/uv/), no install step (Claude Desktop, Curso
 
 Tools:
 
-- `convert_html(html, title, base_url, keep_css, canvas, elements_only)` returns the template JSON and a report.
-- `convert_html_file(path, out_dir, ...)` writes the `.json` and `.zip` to disk.
+- `convert_html(html, title?, base_url?, keep_css?, canvas?, elements_only?)` returns `{template, report}`.
+- `convert_html_file(path, out_dir?, ...)` writes `.json` and `.zip` to disk.
 - `widget_mapping()` returns the HTML → widget mapping so the model can shape its HTML first.
 
-A good pairing: let your AI design the page as HTML, convert it here, then use Elementor's
-official MCP or the import screen to place it on the site.
+A good pairing: let your AI design the page as HTML, convert it here, then import it with the
+plugin, the import screen or Elementor's official MCP.
 
 ## Agent skill
 
-The `skill/html-to-elementor` folder is a ready-made skill. Build the self-contained version
-(the converter bundled inside, no install needed):
+Download `html-to-elementor-skill.zip` from the [latest release](../../releases):
 
-```bash
-python scripts/build_skill.py                       # dist/html-to-elementor-skill.zip
-python scripts/build_skill.py --install ~/.claude/skills
+- **Claude.ai:** Settings › Capabilities › Skills › upload the zip.
+- **Claude Code:** unzip into `~/.claude/skills/`, or from a checkout run `npm run package -- --install ~/.claude/skills`.
+
+The skill bundles the converter in one file and needs only Node.js 18+.
+
+## Library
+
+```ts
+import { convert, toTemplate, templateZip } from "html-to-elementor";
+
+const result = convert(html, { title: "Landing", baseUrl: "https://cdn.example.com/" });
+const template = toTemplate(result, "Landing");   // Elementor template export
+const zip = templateZip(template);                 // Uint8Array, importable .zip
+console.log(result.report);                        // widget counts, HTML fallbacks, warnings
 ```
 
-Upload the zip in Claude.ai (Settings › Capabilities › Skills), or install it into
-`~/.claude/skills` for Claude Code. Each [release](../../releases) also has the zip attached.
+`convert`, `toTemplate` and `templateZip` run in the browser too; `convertFile` and
+`writeOutputs` are the Node file helpers.
 
 ## What converts to what
 
-See [`src/html_to_elementor/MAPPING.md`](src/html_to_elementor/MAPPING.md). In short:
+Full table: [`docs/MAPPING.md`](docs/MAPPING.md).
 
 | HTML | Elementor |
 |---|---|
@@ -122,7 +144,7 @@ See [`src/html_to_elementor/MAPPING.md`](src/html_to_elementor/MAPPING.md). In s
 | forms, tables, SVG, other iframes | HTML widget (kept as markup) |
 
 **Not converted:** JavaScript behaviour (sliders, tabs), `::before/::after`, animations,
-absolute-positioned layering, Tailwind utility classes (compile to CSS first), remote
+absolute-positioned layering, Tailwind utility classes (compile to CSS first), and remote
 stylesheets (inline them or pass `--css`).
 
 ## Development
@@ -130,23 +152,25 @@ stylesheets (inline them or pass `--css`).
 ```bash
 git clone https://github.com/istiackmohammad/html-to-elementor
 cd html-to-elementor
-pip install -e ".[dev,mcp]"
-pytest
-html-to-elementor examples/landing.html -o out/
+npm install
+npm test                 # engine tests (vitest)
+npm run build            # tsc + bundles for the skill and the plugin
+npm run test:php         # plugin logic tests (needs PHP 7.4+, after build)
+npm run package          # release/ zips: skill + WordPress plugin
 ```
 
-The code is small and dependency-free:
-
-| File | Role |
+| Path | Role |
 |---|---|
-| `dom.py` | Minimal HTML DOM on top of the standard library parser |
-| `css.py` | Stylesheet parser, selector matching, cascade, `var()`, media queries |
-| `styles.py` | CSS → Elementor control settings |
-| `widgets.py` | One builder per Elementor widget |
-| `converter.py` | Walks the DOM, decides container vs widget, merges responsive settings |
-| `output.py`, `cli.py`, `server.py` | Files, command line, MCP server |
+| `src/dom.ts` | DOM on top of parse5 (WHATWG-compliant parsing) |
+| `src/css.ts` | Stylesheet parser, selector matching, cascade, `var()`, media queries |
+| `src/styles.ts` | CSS → Elementor control settings |
+| `src/widgets.ts` | One builder per Elementor widget |
+| `src/converter.ts` | Walks the DOM, decides container vs widget, merges responsive settings |
+| `src/cli.ts`, `src/server.ts` | CLI and MCP server |
+| `wordpress-plugin/` | Plugin: importer (Elementor Documents API), REST, admin screen, WP-CLI |
+| `skill/` | Agent skill (the converter is bundled into `scripts/convert.mjs` at build) |
 
-Contributions are very welcome, especially new widget mappings, real-world pages that convert
+Contributions are welcome, especially new widget mappings, real-world pages that convert
 badly (attach the HTML), and import results on different Elementor versions. See
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
