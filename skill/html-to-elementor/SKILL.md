@@ -44,9 +44,6 @@ The converter is bundled as one file, `scripts/convert.mjs`. It needs only Node.
    On Elementor 3.x the Flexbox Container feature must be on (Elementor › Settings › Features);
    it is on by default for new sites and always on in Elementor 4.
 
-   If the site has the **HTML to Elementor** WordPress plugin, the user can instead run
-   `wp html-to-elementor import out/<slug>.json --user=admin` or use Tools › HTML to Elementor.
-
 ## What maps to what
 
 See `references/MAPPING.md` for the full table. In short: semantic blocks and flex/grid

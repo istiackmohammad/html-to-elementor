@@ -1,7 +1,7 @@
 {
   "name": "html-to-elementor",
   "version": "0.2.0",
-  "description": "Convert HTML pages into native Elementor templates (containers + free widgets). Library, CLI, MCP server, agent skill and WordPress plugin with WP-CLI.",
+  "description": "Convert HTML pages into native Elementor templates (containers + free widgets). Library (Node and browser), CLI, MCP server and agent skill.",
   "license": "MIT",
   "type": "module",
   "author": "Orbitronix",
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/istiackmohammad/html-to-elementor.git"
   },
   "bugs": "https://github.com/istiackmohammad/html-to-elementor/issues",
-  "keywords": ["elementor", "wordpress", "html", "converter", "mcp", "wp-cli", "page-builder"],
+  "keywords": ["elementor", "wordpress", "html", "converter", "mcp", "page-builder"],
   "engines": {
     "node": ">=18"
   },
@@ -32,7 +32,6 @@
     "build": "tsc -p tsconfig.json && node scripts/bundle.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:php": "php test/php/importer-test.php",
     "package": "npm run build && node scripts/package.mjs",
     "prepare": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run typecheck && npm test && npm run build"

@@ -8,11 +8,10 @@ Divider), not one big HTML block.
 - **Free Elementor widgets only.** Works with Elementor 3.16+ and 4.x. No Pro, no add-ons.
 - **Reads your CSS properly.** It handles the cascade, specificity, `!important`, CSS variables,
   shorthands and media queries, and turns them into Elementor's desktop / tablet / mobile settings.
-- **One engine, five ways to use it:**
+- **One engine, four ways to use it:**
 
 | | For | Get it |
 |---|---|---|
-| **WordPress plugin** | Site owners: Tools › HTML to Elementor, plus `wp html-to-elementor` WP-CLI | [Releases](../../releases) › `html-to-elementor-wp-plugin-*.zip` |
 | **CLI** | Developers, build pipelines | `npx -y github:istiackmohammad/html-to-elementor page.html` |
 | **MCP server** | Claude, Cursor, Codex, any MCP client | `npx -y -p github:istiackmohammad/html-to-elementor html-to-elementor-mcp` |
 | **Agent skill** | Claude Code / Claude.ai skills | [Releases](../../releases) › `html-to-elementor-skill.zip` |
@@ -27,28 +26,6 @@ Elementor's official MCP builds pages from prompts on a live site (Elementor 4.3
 application password, Atomic layouts) and does not take HTML. Hosted HTML importers send
 your markup to a paid service. This project is an open, local, scriptable converter you can
 read, fix and extend.
-
-## WordPress plugin
-
-Install the plugin zip from the [latest release](../../releases), activate it (Elementor must be
-active), then:
-
-- **Tools › HTML to Elementor:** paste or upload HTML. It converts in your browser, shows a
-  report, then creates a draft page or a saved template. It can also copy remote images into
-  the Media Library.
-- **WP-CLI:**
-
-```bash
-wp html-to-elementor doctor                                       # Elementor, containers, Node.js ready?
-wp html-to-elementor import landing.html --user=admin             # .html needs Node.js 18+ on the server
-wp html-to-elementor import landing.json --as=template --user=admin   # .json needs nothing extra
-wp html-to-elementor import landing.html --post=42 --sideload-images --status=publish --user=admin
-wp html-to-elementor convert landing.html --out=./converted
-```
-
-Pages are saved through Elementor's own Documents API. HTML widgets (forms, tables, SVG) can
-only be imported by users with the `unfiltered_html` capability. A REST endpoint
-(`POST /wp-json/html-to-elementor/v1/import`) is available for your own tools.
 
 ## CLI
 
@@ -99,8 +76,8 @@ Tools:
 - `convert_html_file(path, out_dir?, ...)` writes `.json` and `.zip` to disk.
 - `widget_mapping()` returns the HTML → widget mapping so the model can shape its HTML first.
 
-A good pairing: let your AI design the page as HTML, convert it here, then import it with the
-plugin, the import screen or Elementor's official MCP.
+A good pairing: let your AI design the page as HTML, convert it here, then import it with
+Elementor's import screen or its official MCP.
 
 ## Agent skill
 
@@ -122,8 +99,9 @@ const zip = templateZip(template);                 // Uint8Array, importable .zi
 console.log(result.report);                        // widget counts, HTML fallbacks, warnings
 ```
 
-`convert`, `toTemplate` and `templateZip` run in the browser too; `convertFile` and
-`writeOutputs` are the Node file helpers.
+`convert`, `toTemplate` and `templateZip` run in the browser too (`npm run build` also writes a
+standalone `dist/bundle/html-to-elementor.browser.js` exposing `window.HtmlToElementor`);
+`convertFile` and `writeOutputs` are the Node file helpers.
 
 ## What converts to what
 
@@ -154,9 +132,8 @@ git clone https://github.com/istiackmohammad/html-to-elementor
 cd html-to-elementor
 npm install
 npm test                 # engine tests (vitest)
-npm run build            # tsc + bundles for the skill and the plugin
-npm run test:php         # plugin logic tests (needs PHP 7.4+, after build)
-npm run package          # release/ zips: skill + WordPress plugin
+npm run build            # tsc + bundles (skill script, dist/bundle/)
+npm run package          # release/html-to-elementor-skill.zip
 ```
 
 | Path | Role |
@@ -167,7 +144,6 @@ npm run package          # release/ zips: skill + WordPress plugin
 | `src/widgets.ts` | One builder per Elementor widget |
 | `src/converter.ts` | Walks the DOM, decides container vs widget, merges responsive settings |
 | `src/cli.ts`, `src/server.ts` | CLI and MCP server |
-| `wordpress-plugin/` | Plugin: importer (Elementor Documents API), REST, admin screen, WP-CLI |
 | `skill/` | Agent skill (the converter is bundled into `scripts/convert.mjs` at build) |
 
 Contributions are welcome, especially new widget mappings, real-world pages that convert

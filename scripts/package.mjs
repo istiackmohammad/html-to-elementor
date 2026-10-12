@@ -1,4 +1,4 @@
-// Builds the release zips: the agent skill and the WordPress plugin.
+// Builds the release zip for the agent skill.
 //   node scripts/package.mjs                 -> release/*.zip
 //   node scripts/package.mjs --install DIR   also copy the skill into DIR (e.g. ~/.claude/skills)
 import { zipSync } from "fflate";
@@ -30,7 +30,7 @@ function zip(name, files) {
   return path;
 }
 
-for (const f of ["skill/html-to-elementor/scripts/convert.mjs", "wordpress-plugin/html-to-elementor/assets/converter.js"]) {
+for (const f of ["skill/html-to-elementor/scripts/convert.mjs"]) {
   if (!existsSync(join(root, f))) throw new Error(`missing ${f}: run npm run build first`);
 }
 rmSync(out, { recursive: true, force: true });
@@ -43,8 +43,6 @@ const shared = {
 const skillDir = join(root, "skill/html-to-elementor");
 const skillExtra = Object.fromEntries(Object.entries(shared).map(([k, v]) => [`html-to-elementor/${k}`, v]));
 zip("html-to-elementor-skill.zip", collect(skillDir, "html-to-elementor", skillExtra));
-zip(`html-to-elementor-wp-plugin-${pkg.version}.zip`,
-  collect(join(root, "wordpress-plugin/html-to-elementor"), "html-to-elementor", { "html-to-elementor/LICENSE": shared.LICENSE }));
 
 const i = process.argv.indexOf("--install");
 if (i !== -1) {

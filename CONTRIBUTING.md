@@ -7,7 +7,7 @@ Thanks for helping. Good contributions, roughly in order of value:
 2. **Import reports.** "Imported fine on Elementor X.Y" or "setting Z is ignored" is real data.
 3. **New mappings.** A widget we don't produce yet (testimonial, image box, star rating,
    social icons, accordion from `<details>`, ...), or a CSS property we drop.
-4. **Fixes** to the CSS engine (selectors, shorthands, units) or the WordPress plugin.
+4. **Fixes** to the CSS engine (selectors, shorthands, units).
 
 ## Setup
 
@@ -15,14 +15,13 @@ Thanks for helping. Good contributions, roughly in order of value:
 npm install
 npm test            # engine tests
 npm run typecheck
-npm run build       # needed before the PHP tests and packaging
-npm run test:php    # plugin logic tests (PHP 7.4+)
+npm run build       # compile + bundles (skill script, dist/bundle/)
 ```
 
 ## Ground rules
 
 - **One engine.** All conversion logic lives in `src/` (TypeScript). The CLI, MCP server, skill
-  and WordPress plugin all use it, so a fix lands everywhere at once. Don't duplicate it in PHP.
+  and browser bundle all use it, so a fix lands everywhere at once.
 - **The engine must run in the browser.** Only `src/node.ts`, `src/cli.ts` and `src/server.ts`
   may use Node APIs.
 - **Free widgets only** by default. Pro or add-on widgets can come later behind an option.
@@ -30,8 +29,6 @@ npm run test:php    # plugin logic tests (PHP 7.4+)
   (Templates › Export) or in Elementor's source, not from memory.
 - **Every change gets a test.** Converting `examples/landing.html` must stay free of HTML
   fallbacks and warnings.
-- **WordPress code** follows the WordPress coding standards: escape output, check capabilities,
-  validate input, prefix everything with `hte_` / `HTE_`.
 - Keep files under ~500 lines. Split by concern.
 
 ## Adding a widget
@@ -44,9 +41,8 @@ npm run test:php    # plugin logic tests (PHP 7.4+)
 
 ## Releases
 
-Versions live in `package.json`, `src/version.ts` and the plugin header
-(`wordpress-plugin/html-to-elementor/html-to-elementor.php` + `readme.txt`); `npm run build`
-fails if they disagree. `npm run package` writes the skill and plugin zips to `release/`.
+Versions live in `package.json` and `src/version.ts`; `npm run build` fails if they disagree.
+`npm run package` writes the skill zip to `release/`.
 
 ## Pull requests
 
