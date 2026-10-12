@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brightline Studio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
+<style>
+  :root { --brand: #4f46e5; --ink: #0f172a; --muted: #64748b; --radius: 14px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; color: var(--ink); background: #ffffff; line-height: 1.6; }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  .site-header { background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .site-header .container { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; padding-bottom: 18px; }
+  .logo { font-size: 22px; font-weight: 800; color: var(--ink); }
+  .nav { display: flex; gap: 28px; list-style: none; }
+  .nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; }
+
+  .hero { background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%); padding: 96px 0; text-align: center; }
+  .hero h1 { font-size: 56px; line-height: 1.1; font-weight: 800; letter-spacing: -1px; margin-bottom: 20px; }
+  .hero p { font-size: 20px; color: var(--muted); max-width: 640px; margin: 0 auto 32px; }
+  .actions { display: flex; gap: 14px; justify-content: center; }
+  .btn { display: inline-block; padding: 14px 28px; border-radius: var(--radius); background: var(--brand); color: #fff; font-weight: 600; text-decoration: none; }
+  .btn:hover { background: #4338ca; }
+  .btn-ghost { background: transparent; color: var(--brand); border: 2px solid var(--brand); }
+
+  .features { padding: 80px 0; }
+  .features h2 { text-align: center; font-size: 36px; margin-bottom: 48px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { background: #f8fafc; border-radius: var(--radius); padding: 32px; box-shadow: 0 10px 30px rgba(15,23,42,0.08); }
+  .card i { font-size: 28px; color: var(--brand); margin-bottom: 16px; }
+  .card h3 { font-size: 20px; margin-bottom: 8px; }
+  .card p { color: var(--muted); }
+
+  .split { display: flex; gap: 48px; align-items: center; padding: 80px 24px; max-width: 1140px; margin: 0 auto; }
+  .split img { width: 100%; border-radius: var(--radius); }
+  .split > div { flex: 1; }
+  .checks { list-style: none; }
+  .checks li { padding: 6px 0; }
+
+  .cta { background: var(--ink); color: #fff; text-align: center; padding: 72px 24px; }
+  .cta h2 { font-size: 40px; margin-bottom: 12px; color: #fff; }
+  .cta p { color: #cbd5e1; margin-bottom: 28px; }
+
+  .site-footer { padding: 32px 24px; text-align: center; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 1024px) {
+    .hero h1 { font-size: 44px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .hero { padding: 64px 0; }
+    .hero h1 { font-size: 34px; }
+    .grid { grid-template-columns: 1fr; }
+    .split { flex-direction: column; }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo">Brightline</div>
+      <ul class="nav">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Websites that <span style="color:#4f46e5">convert</span>, built in days</h1>
+      <p>We design and build fast marketing sites for growing teams, then hand you the keys.</p>
+      <div class="actions">
+        <a class="btn" href="#contact">Book a call</a>
+        <a class="btn btn-ghost" href="#features">See the work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Everything you need to launch</h2>
+      <div class="grid">
+        <div class="card">
+          <i class="fa-solid fa-bolt"></i>
+          <h3>Fast by default</h3>
+          <p>Lean pages that load in under a second on mobile.</p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-pen-ruler"></i>
+          <h3>Designed for you</h3>
+          <p>A look built around your brand, not a template.</p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-chart-line"></i>
+          <h3>Built to grow</h3>
+          <p>Analytics and SEO set up before launch day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split" id="about">
+    <div>
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200" alt="Team at work">
+    </div>
+    <div>
+      <h2>A small team that ships</h2>
+      <p>Two designers and two developers, working directly with you from kickoff to launch.</p>
+      <ul class="checks">
+        <li><i class="fa-solid fa-check"></i> Weekly check-ins</li>
+        <li><i class="fa-solid fa-check"></i> Fixed price, no surprises</li>
+        <li><i class="fa-solid fa-check"></i> 30 days of support</li>
+      </ul>
+      <hr style="border:0;border-top:1px solid #e2e8f0;margin:24px 0">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" width="560" height="315"></iframe>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <h2>Ready to start?</h2>
+    <p>Tell us about your project and get a quote within 24 hours.</p>
+    <a class="btn" href="mailto:hello@example.com">Get a quote</a>
+  </section>
+
+  <footer class="site-footer">
+    &copy; 2026 Brightline Studio. All rights reserved.
+  </footer>
+</body>
+</html>
